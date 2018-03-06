@@ -13,14 +13,16 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v2")
 @Api(tags = ["compiler"])
 class CompilerController(@Autowired var compilerService: CompilerService) : RequestHandler() {
     @PostMapping("/compile", produces = ["application/json"])
-    @ApiOperation("Compile from java source code", notes = "Implementation of Single Class .java Application")
-    fun compile(@ApiParam("Java files (before compiled)")@RequestParam("sourcecode") sourcecode: MultipartFile)
+    @ApiOperation("Compile from java source code",
+            notes = "Implementation of Single Class .java Application")
+    fun compile(@ApiParam("Java files (before compiled)")
+                @RequestParam("sourcecode") sourcecode: Array<MultipartFile>)
             : CompilerOutput{
-        checkFileFormatReceived(sourcecode.originalFilename!!)
-        return compilerService.doCompile(sourcecode)
+        sourcecode.forEach { sc -> checkFileFormatReceived(sc.originalFilename!!) }
+        return compilerService.doCompile(*sourcecode)
     }
 }
