@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile
 class CompilerController(@Autowired var compilerService: CompilerService) : RequestHandler() {
     @PostMapping("/compile", produces = ["application/json"])
     @ApiOperation("Compile from java source code",
-            notes = "Implementation of Single Class .java Application")
+            notes = "Implementation of Class Compiler .java Application")
     fun compile(@ApiParam("Java files (before compiled)")
                 @RequestParam("sourcecode") sourcecode: Array<MultipartFile>)
             : CompilerOutput{
