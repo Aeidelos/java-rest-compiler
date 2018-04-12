@@ -1,6 +1,7 @@
 package id.my.rizki.onlinecompiler.service
 
 import id.my.rizki.onlinecompiler.dto.CompilerOutput
+import id.my.rizki.onlinecompiler.exception.MainClassNotFoundException
 import id.my.rizki.onlinecompiler.utils.MD5
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.IOUtils
@@ -14,11 +15,8 @@ import java.io.OutputStreamWriter
 @Service
 class CompilerService {
     fun doCompile(vararg codes: MultipartFile) : CompilerOutput {
-        val location = MD5.generate(codes[0].originalFilename)
+        var location = MD5.generate(codes[0].originalFilename)
         val file = File("code/"+location)
-        if (file.isDirectory) {
-            file.delete()
-        }
         file.mkdir()
         var mainClass: String? = ""
         for(code in codes) {
@@ -30,13 +28,13 @@ class CompilerService {
             for (line in lines) if (line.contains("main") ) mainClass = code.originalFilename
             FileUtils.writeLines(result, updatedLines, false)
         }
-        return execute(file.path, mainClass!!)
-    }
-
-    private fun execute (location: String, filename: String) : CompilerOutput{
+        if (mainClass == "") {
+            file.deleteRecursively()
+            throw MainClassNotFoundException()
+        }
         var result: String? = null
         var error_log: String? = null
-        val classname = filename.replace(".java", "")
+        val classname = mainClass!!.replace(".java", "")
         val builder = ProcessBuilder("/bin/bash")
         var p: Process? = null
         try {
@@ -46,7 +44,7 @@ class CompilerService {
         }
         val p_stdin = BufferedWriter(OutputStreamWriter(p!!.outputStream))
         try {
-            p_stdin.write("cd $location")
+            p_stdin.write("cd $file")
             p_stdin.newLine()
             p_stdin.flush()
         } catch (e: IOException) {
@@ -79,8 +77,7 @@ class CompilerService {
         } catch (e: IOException) {
             e.printStackTrace()
         }
-        val removeFile = File(location)
-        removeFile.deleteRecursively()
+        file.deleteRecursively()
         return CompilerOutput(result!!, error_log!!)
     }
 

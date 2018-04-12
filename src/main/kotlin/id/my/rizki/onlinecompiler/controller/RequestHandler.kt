@@ -2,6 +2,7 @@ package id.my.rizki.onlinecompiler.controller
 
 import id.my.rizki.onlinecompiler.dto.RestErrorInfo
 import id.my.rizki.onlinecompiler.exception.FormatNotSupportedException
+import id.my.rizki.onlinecompiler.exception.MainClassNotFoundException
 import org.apache.commons.io.FilenameUtils
 import org.slf4j.LoggerFactory
 import javax.servlet.http.HttpServletResponse
@@ -24,6 +25,15 @@ open class RequestHandler {
     @ExceptionHandler(FormatNotSupportedException::class)
     @ResponseBody
     open fun <T> handleDataFormatException(ex: FormatNotSupportedException, request: WebRequest, response: HttpServletResponse) : RestErrorInfo<T> {
+        log.info("Error logs : " + ex.message)
+        return RestErrorInfo(code = HttpStatus.BAD_REQUEST.value(), status = HttpStatus.BAD_REQUEST.reasonPhrase,
+                errors = ex.localizedMessage)
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MainClassNotFoundException::class)
+    @ResponseBody
+    open fun <T> handleMainClassNotFoundException(ex: MainClassNotFoundException, request: WebRequest, response: HttpServletResponse) : RestErrorInfo<T> {
         log.info("Error logs : " + ex.message)
         return RestErrorInfo(code = HttpStatus.BAD_REQUEST.value(), status = HttpStatus.BAD_REQUEST.reasonPhrase,
                 errors = ex.localizedMessage)

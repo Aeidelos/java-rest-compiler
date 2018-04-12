@@ -20,9 +20,9 @@ class CompilerController(@Autowired var compilerService: CompilerService) : Requ
     @ApiOperation("Compile from java source code",
             notes = "Implementation of Class Compiler .java Application")
     fun compile(@ApiParam("Java files (before compiled)")
-                @RequestParam("sourcecode") sourcecode: Array<MultipartFile>)
+                @RequestParam("sourcecode") vararg sourcecode: MultipartFile?)
             : CompilerOutput{
-        sourcecode.forEach { sc -> checkFileFormatReceived(sc.originalFilename!!) }
-        return compilerService.doCompile(*sourcecode)
+        sourcecode!!.forEach { sc -> checkFileFormatReceived(sc!!.originalFilename!!) }
+        return compilerService.doCompile(*sourcecode as Array<out MultipartFile>)
     }
 }
