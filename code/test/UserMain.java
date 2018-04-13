@@ -3,5 +3,6 @@ public class UserMain {
         User user = new User();
         user.id = "ID User";
         user.name = "Name User";
+        user.print();
     }
 }

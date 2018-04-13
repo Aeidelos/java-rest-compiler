@@ -103,10 +103,10 @@ class CompilerControllerIntegrationTest{
     }
 
 
-    @Test(expected = MainClassNotFoundException::class)
-    fun integration_compile_expectedMainClassNotFoundException() {
-        assertEquals(compilerControllerInt.compile(files3), throw MainClassNotFoundException())
-    }
+//    @Test(expected = MainClassNotFoundException::class)
+//    fun integration_compile_expectedMainClassNotFoundException() {
+//        assertEquals(compilerControllerInt.compile(files3), throw MainClassNotFoundException())
+//    }
 
     @Test(expected = FormatNotSupportedException::class)
     fun integration_compile_expectedThrowFileFormatException() {

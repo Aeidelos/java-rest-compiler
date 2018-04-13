@@ -56,12 +56,12 @@ class CompilerServiceTest(
                 inputStream3)
 
         var inputStream4 = FileInputStream(file4)
-        files3 = MockMultipartFile("User.java","User.java","application/java",
+        files4 = MockMultipartFile("User.java","User.java","application/java",
                 inputStream4)
 
         var inputStream5 = FileInputStream(file5)
-        files3 = MockMultipartFile("UserMain.java","UserMain.java","application/java",
-                inputStream4)
+        files5 = MockMultipartFile("UserMain.java","UserMain.java","application/java",
+                inputStream5)
         compileService = CompilerService()
     }
 
