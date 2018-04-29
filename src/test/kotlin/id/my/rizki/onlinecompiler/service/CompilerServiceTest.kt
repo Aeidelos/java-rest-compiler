@@ -82,7 +82,8 @@ class CompilerServiceTest(
     @Test
     fun multipleFileCompile() {
         var actualOutput:CompilerOutput = compileService.doCompile(files4, files5)
-        assertEquals(actualOutput, Mockito.any(CompilerOutput::class.java))
+        var expectedOutput:CompilerOutput = CompilerOutput("ID User - Name User\n","");
+        assertEquals(expectedOutput, actualOutput)
     }
 
     @Test(expected=MainClassNotFoundException::class)
