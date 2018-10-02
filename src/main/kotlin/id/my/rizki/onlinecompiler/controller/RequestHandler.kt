@@ -21,12 +21,12 @@ open class RequestHandler {
         var log = LoggerFactory.getLogger(this::class.java)
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     @ExceptionHandler(FormatNotSupportedException::class)
     @ResponseBody
     open fun <T> handleDataFormatException(ex: FormatNotSupportedException, request: WebRequest, response: HttpServletResponse) : RestErrorInfo<T> {
         log.info("Error logs : " + ex.message)
-        return RestErrorInfo(code = HttpStatus.BAD_REQUEST.value(), status = HttpStatus.BAD_REQUEST.reasonPhrase,
+        return RestErrorInfo(code = HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), status = HttpStatus.UNSUPPORTED_MEDIA_TYPE.reasonPhrase,
                 errors = ex.localizedMessage)
     }
 
