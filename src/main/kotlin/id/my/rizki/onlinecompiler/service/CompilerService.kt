@@ -14,6 +14,23 @@ import java.io.OutputStreamWriter
 
 @Service
 class CompilerService {
+
+    fun checkMainClassIsAvailable(mainClass: String?, file: File) {
+        if (mainClass == "") {
+            file.deleteRecursively()
+            throw MainClassNotFoundException()
+        }
+    }
+
+    fun processBuilderStart(builder: ProcessBuilder) : Process? {
+        try {
+            return builder.start()
+        } catch (e: IOException) {
+            println(e)
+        }
+        return null
+    }
+
     fun doCompile(vararg codes: MultipartFile) : CompilerOutput {
         var location = MD5.generate(codes[0].originalFilename)
         val file = File("code/"+location)
@@ -28,20 +45,16 @@ class CompilerService {
             for (line in lines) if (line.contains("main") ) mainClass = code.originalFilename
             FileUtils.writeLines(result, updatedLines, false)
         }
-        if (mainClass == "") {
-            file.deleteRecursively()
-            throw MainClassNotFoundException()
-        }
+
+        checkMainClassIsAvailable(mainClass, file)
+
         var result: String? = null
         var error_log: String? = null
         val classname = mainClass!!.replace(".java", "")
         val builder = ProcessBuilder("/bin/bash")
-        var p: Process? = null
-        try {
-            p = builder.start()
-        } catch (e: IOException) {
-            println(e)
-        }
+
+        var p: Process? = processBuilderStart(builder)
+
         val p_stdin = BufferedWriter(OutputStreamWriter(p!!.outputStream))
         try {
             p_stdin.write("cd $file")
